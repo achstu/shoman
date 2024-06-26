@@ -13,7 +13,7 @@ struct State {
   
   State(std::string setting);
   std::vector<Move> all_moves() const;
-  void apply(Move move);
+  bool apply(Move move);
   int evaluate() const;
-  void print() const;
+  std::string to_string() const;
 };

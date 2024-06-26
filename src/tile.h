@@ -3,8 +3,9 @@
 #include <string>
 
 struct Tile {
-  char b[16];
+  char b[6 * 6];
 
   Tile(std::string setting);
-  void print() const;
+  std::string to_string() const;
+  
 };

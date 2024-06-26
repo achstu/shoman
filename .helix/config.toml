@@ -1,0 +1,3 @@
+[editor]
+lsp.enable = false
+soft-wrap.enable = true

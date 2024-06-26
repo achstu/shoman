@@ -16,8 +16,9 @@ int minimax(const State& state, int depth = 0) {
 
   int value = 0;
   for (Move& move : state.all_moves()) {
-    
-    int minimax(state.apply(move), depth + 1);
+    State child = state;
+    child.apply(move);
+    minimax(child, depth + 1);
   }
   return value;
 }
