@@ -15,5 +15,8 @@ state.o: state.cpp state.h
 move.o: move.h move.cpp
 	$(CXX) $(CXXFLAGS) -c move.cpp
 
-tile.o: tile.h tile.cpp
-	$(CXX) $(CXXFLAGS) -c tile.cpp 
+board.o: board.h board.cpp
+	$(CXX) $(CXXFLAGS) -c board.cpp 
+
+clean:
+	rm *.o

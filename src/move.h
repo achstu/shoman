@@ -3,17 +3,23 @@
 #include <string>
 
 struct Move {
-  std::string notation;
+  int length;
+  int vector;
+  int passive_board;
+  int passive_index;
+  int aggressive_board;
+  int aggressive_index;
 
-  Move(std::string );
-  std::string to_string();
-
-  int lenght() const;
-  int vector(const int side) const;
-
-  int passive(char player) const;
-  int passive_index() const;
   
-  int aggressive(char player) const;
+  std::string to_string() const;
+/*
+  int lenght() const;
+  int vector() const;
+
+  int passive_board() const;
+  int passive_index() const;
+
+  int aggressive_board() const;
   int aggressive_index() const;
+*/
 };

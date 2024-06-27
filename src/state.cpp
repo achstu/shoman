@@ -36,9 +36,13 @@ State::State(std::string setting) {
 }
 
 std::vector<Move> State::all_moves() const {
-  return {};
-}
-
-int State::evaluate() const {
-  return 132;
+  std::vector<Move> moves;
+  for (Tile tile : hometile(player)) {
+    
+    for (std::string passive_move : tile.all_passive_moves()) {
+      
+    }
+    
+  }
+  return moves;
 }

@@ -11,9 +11,8 @@ struct State {
   char player;
 
   
-  State(std::string setting);
+  State(std::string state_string);
   std::vector<Move> all_moves() const;
   bool apply(Move move);
-  int evaluate() const;
   std::string to_string() const;
 };
