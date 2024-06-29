@@ -1,62 +1,88 @@
-#include "tile.h"
+#include "board.h"
+#include "action.h"
 
-#include <vector>
+bool Board::black(int i) const    { return bb_black & (1<<i); }
+bool Board::white(int i) const    { return bb_white & (1<<i); }
+bool Board::occupied(int i) const { return black(i) || white(i); }
+bool Board::empty(int i) const    { return !occupied(i); }
 
-
-Tile::Tile(std::string board_string) {
-  auto it = setting.being();
-  for (int i = 0; i < 6*6; i++) {
-    if (valid_index(i)) {
-      switch (*it) {
-        case 'b': tiles[i] = BLACK; break;
-        case 'w': tiles[i] = WHITE; break;
-        case '_': tiles[i] = EMPTY; break;
-      }
-      it++;
-    } else {
-      tiles[i] = VOID;
+Board::Board(std::string board_string) : bb_black(0), bb_white(0) {
+  // black = white = 0;
+  for (int i = 0; char stone : board_string) {
+    switch (stone) {
+      case 'b': bb_black |= (1<<i); break;
+      case 'w': bb_white |= (1<<i); break;
+      default: break;
     }
+    i++;
   }
+}
 
-/*std::string Tile::to_string() {
-  std::string result;
-  for (int i = 0; i < 6*6; i++) {
-    if (valid(i)) {
-      result.push_back(b[i]);
-    }
-  }
-  return result;
-}*/
+// manhatan distance
+int d(int x, int y) { return abs(x - y); }
 
-std::vector<Action> Board::passive_actions(char player) const {
+// checks if jump from a to b is valid
+static bool valid_jump(int a, int b) {
+  // t / 4 -> row
+  // t % 4 -> col
+  return 0 <= b && b < 16 && (abs(a/4 - b/4) | abs(a%4 - b%4)) < 3;
+}
+
+bool Board::valid_passive_action(Action action) const {
+  return valid_jump(action.index, action.end()) && !occupied(action.mid()) && !occupied(action.end());
+}
+
+bool Board::valid_aggressive_action(Action action) const {
+  bool valid_push = (white(action.mid()) + white(action.end()) == 1) && (black(action.mid()) + black(action.end()) == 0) && empty(action.after());
+  return valid_passive_action(action) || valid_push;
+}
+
+
+
+std::vector<Action> Board::passive_actions() const {
   std::vector<Action> actions;
-  for (int index : board()) {
-    
+  for (int i = 0; i < 16; i++) {
+    if (black(i)) {
+      for (Vector v : vectors) {
+        Action action = {
+          .index = i,
+          .vector = v
+        };
+        if (valid_passive_action(action)) {
+          actions.push_back(action);
+        }
+      }
+    }
   }
   return actions;
 }
 
-std::vector<int> board() {
-  std::vector<int> res;
-  for (int i = 0; i < BOARD_SIZE; i++) {
-    if (valid_index(i)) {
-      res.push_back(i);
+std::vector<Action> Board::aggressive_actions(Vector vector) const {
+  std::vector<Action> actions;
+  for (int i = 0; i < 16; i++) {
+    if (black(i)) {
+      Action action = {
+        .index = i,
+        .vector = vector
+      };
+      if (valid_aggressive_action(action)) {
+        actions.push_back(action);
+      }
     }
   }
-  return res;
+  return actions;
 }
 
-std::vector<int> border() {
-  std::vector<int> res;
-  for (int i = 0; i < BOARD_SIZE; i++) {
-    if (!valid_index(i)) {
-      res.push_back(i);
-    }
-  }
-  return res;
+// assuming that action is valid
+// passive move implemented
+void Board::make(Action action) {
+  // auto [i, d, v] = action;
+  // bb_black ^= (1 << action.index);
+  // bb_black ^= (1 << action.index + action.lenght * action.vector);
+
+  std::swap(bb_black, bb_white);
 }
 
-constexpr bool valid_index(int index) {
-  // return board[index] != VOID;
-  return index >= 6 && index < 5*6 && index % 6 == 0 && index % 6 == 5;
+void Board::unmake(Action action) {
+  make(action);
 }

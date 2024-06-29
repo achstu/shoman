@@ -1,31 +1,34 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
+#include <vector>
 
-enum Tile {
-  EMPTY,
-  BLACK,
-  WHITE,
-  VOID
-};
+#include "action.h"
 
 
+// bitboard iml
+// always assuming that its black's move
 struct Board {
-  static const int SIZE = 6 * 6;
-  Tile tiles[SIZE];
+  uint16_t bb_black;
+  uint16_t bb_white;
 
   // from_string() method
   Board(std::string board_string);
-  // not nessesery
-  // std::string to_string() const;
+
+  // board status
+  bool black(int i) const;
+  bool white(int i) const;
+  bool occupied(int i) const;
+  bool empty(int i) const;
 
   // move generation
-  bool occupied(int index) const;
-  std::vector<Action> passive_actions(char player) const;
-  std::vector<Action> aggresive_moves(int vector) const;
-  
+  bool valid_passive_action(Action action) const;
+  bool valid_aggressive_action(Action action) const;
+  std::vector<Action> passive_actions() const;
+  std::vector<Action> aggressive_actions(Vector vector) const;
 
-// private: // ???
-  // static bool valid_index(int index);
-  
+  // making moves
+  void make(Action action);
+  void unmake(Action action);
 };

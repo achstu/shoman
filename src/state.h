@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "tile.h"
+#include "board.h"
 #include "move.h"
 
 struct State {
