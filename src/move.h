@@ -2,24 +2,18 @@
 
 #include <string>
 
+#include "action.h"
+#include "vector.h"
+
+
 struct Move {
-  int length;
-  int vector;
+  Vector vector;
   int passive_board;
   int passive_index;
   int aggressive_board;
   int aggressive_index;
 
-  
+  Move(int i, int j, Action passive, Action aggressive);
   std::string to_string() const;
-/*
-  int lenght() const;
-  int vector() const;
 
-  int passive_board() const;
-  int passive_index() const;
-
-  int aggressive_board() const;
-  int aggressive_index() const;
-*/
 };

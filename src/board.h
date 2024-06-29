@@ -14,7 +14,13 @@ struct Board {
   uint16_t bb_white;
 
   // from_string() method
+  Board();
   Board(std::string board_string);
+  // std::string to_string() const;
+
+  // winnig and losing boards
+  bool winning() const;
+  bool losing() const;
 
   // board status
   bool black(int i) const;

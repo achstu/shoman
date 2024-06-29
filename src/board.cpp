@@ -1,11 +1,15 @@
 #include "board.h"
 #include "action.h"
 
+bool Board::winning() const { return bb_white == 0; }
+bool Board::losing() const  { return bb_black == 0; }
+
 bool Board::black(int i) const    { return bb_black & (1<<i); }
 bool Board::white(int i) const    { return bb_white & (1<<i); }
 bool Board::occupied(int i) const { return black(i) || white(i); }
 bool Board::empty(int i) const    { return !occupied(i); }
 
+Board::Board() : bb_black(0), bb_white(0) {}
 Board::Board(std::string board_string) : bb_black(0), bb_white(0) {
   // black = white = 0;
   for (int i = 0; char stone : board_string) {

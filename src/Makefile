@@ -1,22 +1,19 @@
-CXX=clang++
-CXXFLAGS=-Wall -Wextra -std=c++20
+CXX := clang++
+CXXFLAGS := -Wall -Wextra -std=c++20
 
+SRCS := main.cpp state.cpp move.cpp board.cpp action.cpp vector.cpp
 
-main: main.o state.o move.o tile.o
-	$(CXX) main.o state.o move.o tile.o -o main
+OBJS := $(SRCS:.cpp=.o)
 
+TARGET := shoman
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
+all: $(TARGET)
 
-state.o: state.cpp state.h
-	$(CXX) $(CXXFLAGS) -c state.cpp
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
 
-move.o: move.h move.cpp
-	$(CXX) $(CXXFLAGS) -c move.cpp
-
-board.o: board.h board.cpp
-	$(CXX) $(CXXFLAGS) -c board.cpp 
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm *.o
+	rm -f $(OBJS)
