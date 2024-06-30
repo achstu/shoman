@@ -1,0 +1,6 @@
+
+.helix
+*.nix
+
+compile_flags.txt
+*.o
