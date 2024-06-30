@@ -21,14 +21,18 @@ bool State::losing() const {
   return false;
 }
 
-// std::string State::to_string() const {
-//   std::string result = std::format("{}: ", 'b');
-//   for (Board board : boards) {
-//     result.push_back(' ');
-//     result.append(board.to_string());
-//   }
-//   return result;
-// }
+std::string State::to_string() const {
+  // std::string result{'b'};
+  std::string result;
+
+  std::string sep;
+  for (Board board : boards) {
+    result.append(sep);
+    result.append(board.to_string());
+    sep = " ";
+  }
+  return result;
+}
 
 
 State::State(std::string state_string) {
@@ -36,13 +40,22 @@ State::State(std::string state_string) {
 
   char player;
   stream >> player;
-  if (player == 'w') std::swap(boards[0], boards[1]);
 
   int i = 0;
   std::string board_string;
   while (stream >> board_string) {
     boards[i] = Board(board_string);
     i++;
+  }
+
+  if (player == 'w') flip();
+}
+
+void State::flip() {
+  std::swap(boards[0], boards[2]);
+  std::swap(boards[1], boards[3]);
+  for (Board board : boards) {
+    board.flip();
   }
 }
 
@@ -60,3 +73,20 @@ std::vector<Move> State::all_moves() const {
   }
   return moves;
 }
+
+void State::make(Move move) {
+  boards[move.passive_board].make({move.passive_index, move.vector});
+  boards[move.aggressive_board].make({move.aggressive_index, move.vector});
+  flip();
+}
+
+// TODO: consider zobrist hashing
+std::size_t State::hash() const {
+  const std::size_t M = 998'244'353;
+  __uint128_t bb = 0;
+  for (Board board : boards) {
+    bb = (bb << 32) | board.hash();
+  }
+  return bb % M;
+}
+

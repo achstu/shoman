@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 
+#include "move.h"
 #include "state.h"
 
 #include <format>
@@ -17,10 +18,39 @@ Move random_move(const State& state) {
   return moves[distrib(rng)];
 }
 
+char other(char player) { return (player == 'b') ? 'w' : 'b'; }
+
+const int SZ = 998'244'353;
+bool hash_table[SZ];
+
+bool& visited(const State& state) {
+  return hash_table[state.hash() % SZ];
+}
+
+
+
+int move_count(const State& state, char player, int depth) {
+  if (depth == 0) return 1;
+
+  
+  
+}
+
+void move_search(const State& state, char player, int depth = 0) {
+
+  auto moves = state.all_moves();
+  for (Move move : moves) {
+    State child = state;
+    child.make(move);
+
+  }
+}
+
 int main() {
-  std::string board_string;
-  getline(std::cin, board_string);
-  State state(board_string);
-  std::cout << random_move(state).to_string() << std::endl;
+  std::string state_string;
+  getline(std::cin, state_string);
+  State state(state_string);
+  move_search(state, 'b');
+  // std::cout << random_move(state).to_string() << std::endl;
 }
 

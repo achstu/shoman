@@ -1,5 +1,4 @@
 #include "board.h"
-#include "action.h"
 
 bool Board::winning() const { return bb_white == 0; }
 bool Board::losing() const  { return bb_black == 0; }
@@ -21,24 +20,40 @@ Board::Board(std::string board_string) : bb_black(0), bb_white(0) {
     i++;
   }
 }
+std::string Board::to_string() const {
+  std::string board_string;
+  for (int i = 0; i < 16; i++) {
+    if (black(i)) board_string.push_back('b');
+    if (white(i)) board_string.push_back('w');
+    if (empty(i)) board_string.push_back('_');
+  }
+  return board_string;
+}
 
 // manhatan distance
 int d(int x, int y) { return abs(x - y); }
 
-// checks if jump from a to b is valid
-static bool valid_jump(int a, int b) {
+// checks if push from a to b is valid
+static bool valid_push(int a, int b) {
   // t / 4 -> row
   // t % 4 -> col
   return 0 <= b && b < 16 && (abs(a/4 - b/4) | abs(a%4 - b%4)) < 3;
 }
 
 bool Board::valid_passive_action(Action action) const {
-  return valid_jump(action.index, action.end()) && !occupied(action.mid()) && !occupied(action.end());
+  return
+    valid_push(action.start(), action.end()) &&
+    !occupied(action.mid()) &&
+    !occupied(action.end());
 }
 
 bool Board::valid_aggressive_action(Action action) const {
-  bool valid_push = (white(action.mid()) + white(action.end()) == 1) && (black(action.mid()) + black(action.end()) == 0) && empty(action.after());
-  return valid_passive_action(action) || valid_push;
+  bool opponent_push =
+    valid_push(action.start(), action.end()) &&
+    white(action.mid()) + white(action.end()) == 1 &&
+    black(action.mid()) + black(action.end()) == 0 &&
+    (empty(action.after()) || !valid_push(action.end(), action.after()));
+  return valid_passive_action(action) || opponent_push;
 }
 
 
@@ -77,16 +92,23 @@ std::vector<Action> Board::aggressive_actions(Vector vector) const {
   return actions;
 }
 
-// assuming that action is valid
-// passive move implemented
-void Board::make(Action action) {
-  // auto [i, d, v] = action;
-  // bb_black ^= (1 << action.index);
-  // bb_black ^= (1 << action.index + action.lenght * action.vector);
+void Board::flip() { std::swap(bb_black, bb_white); }
 
-  std::swap(bb_black, bb_white);
+void push_stone(uint16_t &bb, int from, int to) {
+  bb ^= (1 << from);
+  if (valid_push(from, to))
+    bb ^= (1 << to);
 }
 
-void Board::unmake(Action action) {
-  make(action);
+void Board::make(Action action) {
+  // firstly remove stone from starting position
+  push_stone(bb_black, action.start(), action.end());
+  if (white(action.mid())) push_stone(bb_white, action.mid(), action.after());
+  if (white(action.end())) push_stone(bb_white, action.end(), action.after());
+
+}
+ 
+
+std::size_t Board::hash() const {
+  return ((std::size_t)bb_black << 16) | bb_white;
 }

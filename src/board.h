@@ -7,22 +7,20 @@
 #include "action.h"
 
 
-// bitboard iml
-// always assuming that its black's move
 struct Board {
   uint16_t bb_black;
   uint16_t bb_white;
 
-  // from_string() method
+  // constructors
   Board();
   Board(std::string board_string);
-  // std::string to_string() const;
+  std::string to_string() const;
 
-  // winnig and losing boards
+  // board status
   bool winning() const;
   bool losing() const;
 
-  // board status
+  // info about stones
   bool black(int i) const;
   bool white(int i) const;
   bool occupied(int i) const;
@@ -36,5 +34,9 @@ struct Board {
 
   // making moves
   void make(Action action);
-  void unmake(Action action);
+  void flip();
+
+  // comparing boards
+  bool operator==(const Board&) const = default;
+  std::size_t hash() const;
 };
