@@ -2,4 +2,4 @@ theme = "ayu_evolve"
 
 [editor]
 soft-wrap.enable = true
-lsp.enable = false
+lsp.enable = true

@@ -1,5 +1,5 @@
 CXX := clang++
-CXXFLAGS := -Wall -Wextra -std=c++20
+CXXFLAGS := -Wall -Wextra -std=c++20 -O3
 
 SRCS := state.cpp move.cpp board.cpp action.cpp vector.cpp
 

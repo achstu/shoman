@@ -1,4 +1,5 @@
 #include "state.h"
+#include "board.h"
 
 #include <format>
 #include <sstream>
@@ -59,7 +60,20 @@ void State::flip() {
   }
 }
 
+std::vector<Move> passive_moves(Board passive, Board aggressive) {
+  std::vector<Move> moves;
+
+  return moves;
+}
+
+
+
+std::vector<Move> all_moves(Board passive, Board aggressive) {
+  return passive_moves(passive, aggressive);
+}
+
 std::vector<Move> State::all_moves() const {
+  return passive_moves(boards[0], boards[1]) + aggressive_moves();
   std::vector<Move> moves;
   for (int i : {0, 1}) {
     for (Action passive : boards[i].passive_actions()) {
