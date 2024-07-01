@@ -94,7 +94,7 @@ std::size_t State::hash() const {
 float State::evaluate() const {
   float score = 0;
   for (int i = 0; i < 4; ++i) {
-    score += board[i].evaluate();
+    score += boards[i].evaluate();
   }
   return score;
 }
