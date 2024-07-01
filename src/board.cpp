@@ -115,3 +115,29 @@ void Board::make(Action action) {
 std::size_t Board::hash() const {
   return ((std::size_t)bb_black << 16) | bb_white;
 }
+
+int Board::evaluate() const {
+  int score = 0;
+  // masks
+  const uint16_t centerMask = 0b0000011001100000;
+  const uint16_t edgeMask = 0b0110100110010110;
+
+  //Points for each position
+  const float CENTER_CONTROL = 2/5;
+  const float EDGE_CONTROL = 1/5;
+  const float STONE_COUNT = 1;
+
+
+  // Center and edge control scoring
+  score += CENTER_CONTROL * countBits(bb_black & centerMask);
+  score += EDGE_CONTROL * countBits(bb_black & edgeMask);
+  score -= CENTER_CONTROL * countBits(bb_white & centerMask);
+  score -= EDGE_CONTROL * countBits(bb_white & edgeMask);
+
+  // Stone count bonus
+  int playerStones = countBits(bb_black);
+  int opponentStones = countBits(bb_white);
+  score += (playerStones - opponentStones) * STONE_COUNT;
+
+  return score;
+}
