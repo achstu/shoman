@@ -71,7 +71,7 @@ bool Board::valid_aggressive_action(Action action) const {
       return false; // Move is out of bounds
     }
       return boards[pos.board][pos.row][pos.col] != EMPTY && boards[pos.board][pos.row][pos.col] != (currentPlayer == PLAYER_BLACK ? BLACK : WHITE);
-    }
+  }
 
 std::vector<Action> Board::passive_actions() const {
   std::vector<Action> actions;
