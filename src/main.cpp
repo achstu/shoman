@@ -2,7 +2,6 @@
 #include <string>
 
 #include "state.h"
-#include "move.h"
 #include "search.h"
 
 int main() {
@@ -10,6 +9,6 @@ int main() {
   getline(std::cin, state_string);
   State state(state_string);
 
-  std::cout << minimax(state) << std::endl;
+  std::cout << minimax(state, 2) << std::endl;
 }
 

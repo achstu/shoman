@@ -1,7 +1,7 @@
 CXX := g++
 CXXFLAGS := -Wall -Wextra -std=c++20
 
-SRCS := state.cpp move.cpp board.cpp action.cpp vector.cpp minimax.cpp
+SRCS := state.cpp move.cpp board.cpp action.cpp vector.cpp search.cpp
 
 OBJS := $(SRCS:.cpp=.o)
 

@@ -19,7 +19,8 @@ struct Board {
   // board status
   bool winning() const;
   bool losing() const;
-
+  bool terminal() const;
+  
   // info about stones
   bool black(int i) const;
   bool white(int i) const;
@@ -27,7 +28,7 @@ struct Board {
   bool empty(int i) const;
 
   int count_black() const;
-  int connt_white() const;
+  int count_white() const;
   
   // move generation
   bool valid_passive_action(Action action) const;
@@ -42,4 +43,7 @@ struct Board {
   // comparing boards
   bool operator==(const Board&) const = default;
   std::size_t hash() const;
+
+  // evaluation function
+  float evaluate() const;
 };

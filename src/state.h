@@ -29,4 +29,7 @@ struct State {
   // comparing states
   bool operator==(const State&) const = default;
   std::size_t hash() const;
+
+  // evaluation funtion
+  float evaluate() const;
 };

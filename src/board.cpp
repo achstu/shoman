@@ -1,7 +1,11 @@
 #include "board.h"
 
+#include <bit>
+#include <cstdint>
+
 bool Board::winning() const { return bb_white == 0; }
 bool Board::losing() const  { return bb_black == 0; }
+bool Board::terminal() const { return winning() || losing(); }
 
 bool Board::black(int i) const    { return bb_black & (1<<i); }
 bool Board::white(int i) const    { return bb_white & (1<<i); }
@@ -116,27 +120,33 @@ std::size_t Board::hash() const {
   return ((std::size_t)bb_black << 16) | bb_white;
 }
 
-int Board::evaluate() const {
-  int score = 0;
+#include <cmath>
+
+float Board::evaluate() const {
+  if (terminal()) {
+    return winning() ? INFINITY : -INFINITY;
+  }
+  float score = 0;
   // masks
   const uint16_t centerMask = 0b0000011001100000;
   const uint16_t edgeMask = 0b0110100110010110;
 
   //Points for each position
-  const float CENTER_CONTROL = 2/5;
-  const float EDGE_CONTROL = 1/5;
-  const float STONE_COUNT = 1;
+  const float CENTER_CONTROL = 2.0 / 5.0;
+  const float EDGE_CONTROL = 1.0 / 5.0;
+  const float STONE_COUNT = 1.0;
 
 
   // Center and edge control scoring
-  score += CENTER_CONTROL * countBits(bb_black & centerMask);
-  score += EDGE_CONTROL * countBits(bb_black & edgeMask);
-  score -= CENTER_CONTROL * countBits(bb_white & centerMask);
-  score -= EDGE_CONTROL * countBits(bb_white & edgeMask);
+  score += CENTER_CONTROL * std::popcount(uint16_t(bb_black & centerMask));
+  score += EDGE_CONTROL * std::popcount(uint16_t(bb_black & edgeMask));
+
+  score -= CENTER_CONTROL * std::popcount(uint16_t(bb_white & centerMask));
+  score -= EDGE_CONTROL * std::popcount(uint16_t(bb_white & edgeMask));
 
   // Stone count bonus
-  int playerStones = countBits(bb_black);
-  int opponentStones = countBits(bb_white);
+  int playerStones = count_black();
+  int opponentStones = count_white();
   score += (playerStones - opponentStones) * STONE_COUNT;
 
   return score;

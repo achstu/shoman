@@ -91,3 +91,6 @@ std::size_t State::hash() const {
   return bb % M;
 }
 
+float State::evaluate() const {
+  return 1.0;
+}
