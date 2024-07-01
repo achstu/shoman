@@ -11,6 +11,7 @@ struct State {
   Board boards[4];
 
   // constructor
+  State(int seed);
   State(std::string state_string);
   std::string to_string() const;
 

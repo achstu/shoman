@@ -2,6 +2,7 @@
 #include "board.h"
 
 #include <format>
+#include <random>
 #include <sstream>
 
 #include <algorithm>
@@ -35,6 +36,11 @@ std::string State::to_string() const {
   return result;
 }
 
+State::State(int seed) {
+  for (Board& board : boards) {
+    board = Board(1);
+  }
+}
 
 State::State(std::string state_string) {
   std::stringstream stream(state_string);

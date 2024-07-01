@@ -2,6 +2,8 @@
 
 #include <bit>
 #include <cstdint>
+#include <cstdlib>
+#include <random>
 
 bool Board::winning() const { return bb_white == 0; }
 bool Board::losing() const  { return bb_black == 0; }
@@ -14,6 +16,34 @@ bool Board::empty(int i) const    { return !occupied(i); }
 
 int Board::count_black() const { return std::popcount(bb_black); }
 int Board::count_white() const { return std::popcount(bb_white); }
+
+uint16_t random_mask(int bits, int seed) {
+  uint16_t mask = 0;
+  std::random_device dev;
+  std::mt19937 rng(dev());
+  std::uniform_int_distribution<> distrib(0, 15);
+  while (bits--) {
+    int bit = distrib(rng);
+    mask |= (1 << bit);
+  }
+  return mask;
+}
+
+Board::Board(int seed) {
+  std::random_device dev;
+  std::mt19937 rng(dev());
+  std::uniform_int_distribution<> distrib(1, 4);
+  int b = distrib(rng);
+  int w = distrib(rng);
+
+  bb_black = random_mask(b, seed);
+  bb_white = random_mask(w, seed);
+  uint16_t a = bb_white & bb_black;
+
+  bb_black ^= a;
+  bb_white ^= a;
+  
+}
 
 Board::Board() : bb_black(0), bb_white(0) {}
 Board::Board(std::string board_string) : bb_black(0), bb_white(0) {
@@ -31,8 +61,8 @@ std::string Board::to_string() const {
   std::string board_string;
   for (int i = 0; i < 16; i++) {
     if (black(i)) board_string.push_back('b');
-    if (white(i)) board_string.push_back('w');
-    if (empty(i)) board_string.push_back('_');
+    else if (white(i)) board_string.push_back('w');
+    else if (empty(i)) board_string.push_back('_');
   }
   return board_string;
 }

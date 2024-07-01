@@ -13,6 +13,7 @@ struct Board {
 
   // constructors
   Board();
+  Board(int seed);
   Board(std::string board_string);
   std::string to_string() const;
 
