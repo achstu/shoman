@@ -64,14 +64,14 @@ bool Board::valid_aggressive_action(Action action) const {
 }
 
   // Check if a move is a capture move
-  bool isCaptureMove(const Move& move) {
+/*  bool isCaptureMove(const Move& move) {
     // Check if the second move results in capturing an opponent's stone
     Position pos = move.secondMove;
     if (pos.row < 0 || pos.row >= BOARD_SIZE || pos.col < 0 || pos.col >= BOARD_SIZE) {
       return false; // Move is out of bounds
     }
       return boards[pos.board][pos.row][pos.col] != EMPTY && boards[pos.board][pos.row][pos.col] != (currentPlayer == PLAYER_BLACK ? BLACK : WHITE);
-  }
+  }*/
 
 std::vector<Action> Board::passive_actions() const {
   std::vector<Action> actions;

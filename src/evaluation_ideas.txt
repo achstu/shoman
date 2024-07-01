@@ -1,0 +1,17 @@
+Stone Advantage: Evaluate the difference in the number of stones between the players. Having more stones can be advantageous.
+DONE
+Control of Key Positions: Evaluate the control over key areas of the board, such as the center.
+DONE
+Connected Stones: Evaluate the connectivity of stones. Stones that are adjacent or form a cluster can support each other and be harder to push.
+
+Threatening Moves: Evaluate moves that create immediate threats to push off the board.
+
+Defensive Moves: Evaluate moves that defend against immediate threats from the opponent.
+
+Potential for Future Moves: Evaluate moves that open up more future move possibilities for the player while limiting the opponent’s options.
+DONE / MOBILITY
+Opponent's Weaknesses: Evaluate positions that exploit the opponent’s weaknesses, such as isolated stones or stones close to the edge.
+
+Push Potential: Evaluate the potential for pushing multiple opponent stones off the board in future moves.
+
+Blocking Potential: Evaluate the ability to block the opponent's strategic lines or key moves.
