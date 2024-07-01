@@ -8,6 +8,9 @@ bool Board::white(int i) const    { return bb_white & (1<<i); }
 bool Board::occupied(int i) const { return black(i) || white(i); }
 bool Board::empty(int i) const    { return !occupied(i); }
 
+int Board::count_black() const { return std::popcount(bb_black); }
+int Board::count_white() const { return std::popcount(bb_white); }
+
 Board::Board() : bb_black(0), bb_white(0) {}
 Board::Board(std::string board_string) : bb_black(0), bb_white(0) {
   // black = white = 0;

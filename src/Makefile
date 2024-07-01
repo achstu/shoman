@@ -1,7 +1,7 @@
-CXX := clang++
-CXXFLAGS := -Wall -Wextra -std=c++20 -O3
+CXX := g++
+CXXFLAGS := -Wall -Wextra -std=c++20
 
-SRCS := state.cpp move.cpp board.cpp action.cpp vector.cpp
+SRCS := state.cpp move.cpp board.cpp action.cpp vector.cpp minimax.cpp
 
 OBJS := $(SRCS:.cpp=.o)
 
@@ -11,6 +11,9 @@ all: $(TARGET)
 
 $(TARGET): $(OBJS) main.o
 	$(CXX) $(CXXFLAGS) $(OBJS) main.o -o $(TARGET)
+
+run: $(TARGET)
+	./shoman < ../test/initial.txt
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
