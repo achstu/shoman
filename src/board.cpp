@@ -63,7 +63,15 @@ bool Board::valid_aggressive_action(Action action) const {
   return valid_passive_action(action) || opponent_push;
 }
 
-
+  // Check if a move is a capture move
+  bool isCaptureMove(const Move& move) {
+    // Check if the second move results in capturing an opponent's stone
+    Position pos = move.secondMove;
+    if (pos.row < 0 || pos.row >= BOARD_SIZE || pos.col < 0 || pos.col >= BOARD_SIZE) {
+      return false; // Move is out of bounds
+    }
+      return boards[pos.board][pos.row][pos.col] != EMPTY && boards[pos.board][pos.row][pos.col] != (currentPlayer == PLAYER_BLACK ? BLACK : WHITE);
+    }
 
 std::vector<Action> Board::passive_actions() const {
   std::vector<Action> actions;
@@ -164,28 +172,3 @@ float Board::mobility_score() const {
 
   return (black_mobility - white_mobility) * MOBILITY;
 }
-/*
-float Board::threat_and_safety_score() const {
-  float score = 0;
-
-  for (int i = 0; i < 16 * TOTAL_BOARDS; ++i) {
-    if (black(i)) {
-      for (Vector v : vectors) {
-        Action action = { i, v };
-        if (valid_aggressive_action(action) && white(action.end())) {
-          score += THREAT; // Black threatening to capture a white stone
-        }
-      }
-    }
-    if (white(i)) {
-      for (Vector v : vectors) {
-        Action action = { i, v };
-        if (valid_aggressive_action(action) && black(action.end())) {
-          score -= THREAT; // White threatening to capture a black stone
-        }
-      }
-    }
-  }
-
-  return score;
-}*/

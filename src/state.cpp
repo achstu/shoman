@@ -98,3 +98,21 @@ float State::evaluate() const {
   }
   return score;
 }
+/* pomysly na potem
+float State::evaluateBoard() {
+  float score = 0;
+
+  //score += evaluateStoneCount();
+  //score += evaluateStonePositioning();
+  for (int i = 0; i < 4; ++i) {
+    score += boards[i].evaluate();
+  }
+
+  
+  score += evaluateMobility();
+  score += evaluateThreats();
+  score += evaluateDefense();
+
+  return score;
+}
+*/
