@@ -2,5 +2,7 @@
 
 #include "state.h"
 
-float search(const State& state);
+float minimax(const State& state, int depth);
+
+float alphabeta(float alpha, float beta, const State& state, int depth);
 

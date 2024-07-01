@@ -1,9 +1,10 @@
 #include "search.h"
 
 
+#include <cmath>
 
 // simple minimax approach
-float minimax(const State& state, int depth = 2) {
+float minimax(const State& state, int depth) {
   if (depth == 0) {
     return state.evaluate();
   }
@@ -25,18 +26,14 @@ float minimax(const State& state, int depth = 2) {
 // simple alpha-beta approach
 // alpha := minimum score that the maximizing player is assured of
 // beta := maximum score that the minimizing player is assured of
-float alpha_beta(float alpha, float beta, const State& state, int depth = 2) {
+float alpha_beta(float alpha, float beta, const State& state, int depth) {
   if (depth == 0) {
     return state.evaluate();
   }
 
-  float 
   for (Move move : state.all_moves()) {
     State child = state;
-    child.make(move);
-
-    
+    child.make(move); 
   }
-
-  
+  return 1.0;  
 } 
