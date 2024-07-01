@@ -26,6 +26,9 @@ struct Board {
   bool occupied(int i) const;
   bool empty(int i) const;
 
+  int count_black() const;
+  int connt_white() const;
+  
   // move generation
   bool valid_passive_action(Action action) const;
   bool valid_aggressive_action(Action action) const;
