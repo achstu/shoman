@@ -46,4 +46,5 @@ struct Board {
 
   // evaluation function
   float evaluate() const;
+  float mobility_score() const;
 };

@@ -149,7 +149,6 @@ float Board::evaluate() const {
   int opponentStones = count_white();
   score += (playerStones - opponentStones) * STONE_COUNT;
 
-  score += stone_count_score();
   score += mobility_score();
   //score += threat_and_safety_score();
 
@@ -158,9 +157,10 @@ float Board::evaluate() const {
 
 float Board::mobility_score() const {
   int black_mobility = passive_actions().size();
-  flip(); // Temporarily flip to evaluate white's mobility
-  int white_mobility = passive_actions().size();
-  flip(); // Flip back to original state
+  Board other = *this;
+  other.flip();
+  // Temporarily flip to evaluate white's mobility
+  int white_mobility = other.passive_actions().size();
 
   return (black_mobility - white_mobility) * MOBILITY;
 }
