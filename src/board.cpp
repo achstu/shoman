@@ -121,6 +121,12 @@ std::size_t Board::hash() const {
 }
 
 #include <cmath>
+//Points for each position
+const float CENTER_CONTROL = 2.0 / 5.0;
+const float EDGE_CONTROL = 1.0 / 5.0;
+const float STONE_COUNT = 1.0;
+const float MOBILITY = 4.0/5.0;
+//const float THREAT = 4.0/5.0;
 
 float Board::evaluate() const {
   if (terminal()) {
@@ -130,13 +136,6 @@ float Board::evaluate() const {
   // masks
   const uint16_t centerMask = 0b0000011001100000;
   const uint16_t edgeMask = 0b0110100110010110;
-
-  //Points for each position
-  const float CENTER_CONTROL = 2.0 / 5.0;
-  const float EDGE_CONTROL = 1.0 / 5.0;
-  const float STONE_COUNT = 1.0;
-  const float MOBILITY = 3.0/5.0;
-  const float THREAT = 4.0/5.0;
 
   // Center and edge control scoring
   score += CENTER_CONTROL * std::popcount(uint16_t(bb_black & centerMask));
