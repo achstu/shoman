@@ -116,17 +116,24 @@ std::size_t Board::hash() const {
   return ((std::size_t)bb_black << 16) | bb_white;
 }
 
-int Board::evaluate() const {
-  int score = 0;
-  // masks
-  const uint16_t centerMask = 0b0000011001100000;
-  const uint16_t edgeMask = 0b0110100110010110;
+// Count the number of set bits in a bit mask
+/*
+int countBits(uint16_t mask) {
+  return std::bitset<16>(mask).count();
+}*/
 
-  //Points for each position
+//Points for each position
   const float CENTER_CONTROL = 2/5;
   const float EDGE_CONTROL = 1/5;
   const float STONE_COUNT = 1;
+  const float MOBILITY = 3/5;
+  const float THREAT = 4/5;
 
+float Board::evaluate() const {
+  float score = 0;
+  // masks
+  const uint16_t centerMask = 0b0000011001100000;
+  const uint16_t edgeMask = 0b0110100110010110;
 
   // Center and edge control scoring
   score += CENTER_CONTROL * countBits(bb_black & centerMask);
@@ -138,6 +145,44 @@ int Board::evaluate() const {
   int playerStones = countBits(bb_black);
   int opponentStones = countBits(bb_white);
   score += (playerStones - opponentStones) * STONE_COUNT;
+
+  score += stone_count_score();
+  score += mobility_score();
+  score += threat_and_safety_score();
+
+  return score;
+}
+
+float Board::mobility_score() const {
+  int black_mobility = passive_actions().size();
+  flip(); // Temporarily flip to evaluate white's mobility
+  int white_mobility = passive_actions().size();
+  flip(); // Flip back to original state
+
+  return (black_mobility - white_mobility) * MOBILITY;
+}
+
+float Board::threat_and_safety_score() const {
+  float score = 0;
+
+  for (int i = 0; i < 16 * TOTAL_BOARDS; ++i) {
+    if (black(i)) {
+      for (Vector v : vectors) {
+        Action action = { i, v };
+        if (valid_aggressive_action(action) && white(action.end())) {
+          score += THREAT; // Black threatening to capture a white stone
+        }
+      }
+    }
+    if (white(i)) {
+      for (Vector v : vectors) {
+        Action action = { i, v };
+        if (valid_aggressive_action(action) && black(action.end())) {
+          score -= THREAT; // White threatening to capture a black stone
+        }
+      }
+    }
+  }
 
   return score;
 }

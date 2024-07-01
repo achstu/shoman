@@ -91,3 +91,10 @@ std::size_t State::hash() const {
   return bb % M;
 }
 
+float State :: evaluate() const{
+  float max;
+  float min;
+  for (Board board : boards) {
+    board.evaluate();
+  }
+}
