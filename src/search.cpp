@@ -1,10 +1,6 @@
 #include "search.h"
 #include "state.h"
-
-
-#include <limits>
-
-#define INF std::numeric_limits<float>::infinity()
+#include "tt.h"
 
 // simple minimax approach
 float minimax(const State& state, int depth) {
@@ -12,9 +8,8 @@ float minimax(const State& state, int depth) {
     return state.evaluate();
   }
 
-  // TODO: std::numeric_limits<float>::inifinity();
   float score = -INF;
-  for (Move move : state.all_moves()) {
+  for (const Move& move : state.all_moves()) {
     State child = state;
     child.make(move);
 
@@ -26,7 +21,7 @@ float minimax(const State& state, int depth) {
   return score;
 }
 
-// simple alpha-beta approach
+// alpha-beta approach
 float alphabeta(const State& state, int depth, float alpha, float beta) {
   if (depth == 0 || state.terminal()) {
     return state.evaluate();
@@ -46,6 +41,36 @@ float alphabeta(const State& state, int depth, float alpha, float beta) {
   return score;
 }
 
-float search(const State& state, int depth) {
-  return alphabeta(state, depth, -INF, INF);
+// alpha-beta with transposition table
+float tt_alphabeta(TranspositionTable& tt, const State& state, int depth,
+                   float alpha, float beta) {
+  if (depth == 0 || state.terminal()) {
+    return state.evaluate();
+  }
+  if (tt.contains(state) && tt[state].depth >= depth) {
+    return tt[state].score;
+  }
+
+  float score = -INF;
+  Move best;
+  for (const Move& move : state.all_moves()) {
+    State child = state;
+    child.make(move);
+
+    float child_score = -tt_alphabeta(tt, child, depth-1, -beta, -alpha);
+    
+    // score = std::max(score, child_score);
+    if (score < child_score) {
+      score = child_score;
+      best = move;
+    }
+    
+    alpha = std::max(alpha, score);
+    if (alpha >= beta) {
+      break; // Beta cut-off
+    }
+  }
+
+  tt.update(state, {score, depth, best});
+  return score;
 }

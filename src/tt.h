@@ -1,37 +1,44 @@
 #pragma once
 
-
 #include "state.h"
-#include <algorithm>
+#include "move.h"
+
 #include <array>
 #include <cstddef>
-#include <iostream>
 
 // Transposition Table with open addressing
 // and linear porbing
-struct TT {
+struct TranspositionTable {
   using Key = State;
   using Value = struct {
     float score;
     int depth;
+    Move move;
   };
 
-  struct Elem {
+  struct Pair {
     Key key;
     Value value;
   };
   
-  // static constexpr size_t SIZE = 0x3B800001;
-  static constexpr size_t SIZE = 10'000'003;
-  std::array<Elem, SIZE> map;
-  // Elem map[SIZE];
-  // std::vector<Elem> map;
+  // 100000039 is prime
+  static constexpr size_t SIZE = 0x5F5E127;
+  std::array<Pair, SIZE> table;
+  size_t occpuied = 0;
   
+  
+  
+  // constructor  
+  TranspositionTable() = default;
+
+  // probing function
   static size_t probe(size_t x);
 
-  TT() = default;
-  bool contains(Key k);
-  Value& get(Key k);
-  Key& get_key(Key k);
-  void insert(Key k, Value v);
+  // checks if Key is in hash table
+  bool occupied(size_t pos) const; // @internal
+  size_t find(Key k) const; // @internal
+  
+  bool contains(Key k) const;
+  void update(Key k, Value v);
+  Value& operator[](Key k);
 };

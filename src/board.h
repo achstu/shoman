@@ -13,8 +13,10 @@ struct Board {
 
   // constructors
   Board();
+  
   static Board random();
-  Board(std::string board_string);
+  static Board from_string(std::string board_string);
+  
   std::string to_string() const;
 
   // board status

@@ -1,28 +1,49 @@
 #include "tt.h"
 #include <cstddef>
+#include <stdexcept>
 
-
-size_t TT::probe(size_t x) {
+size_t TranspositionTable::probe(size_t x) {
+  // TODO: consider better probing function
+  // linear probing implementation
   // gcd(a, SIZE) = 1
   constexpr size_t a = 85654861; // 0x51AFD4D
   constexpr size_t b = 2003; // b is obsolete
   return a * x + b;
 }
 
-#include <iostream>
 
-TT::Value& TT::get(Key k) {
-  return map[k.hash() % SIZE].value;
+
+bool TranspositionTable::occupied(size_t pos) const {
+  return table[pos].value.depth > 0;
 }
 
-TT::Key& TT::get_key(Key k) {
-  return map[k.hash() % SIZE].key;
+// @returns index of Key k in table
+// if table does not contain k then suitable index
+// is returned
+size_t TranspositionTable::find(Key k) const {
+  size_t pos = k.hash() % SIZE;
+  while (occupied(pos) && table[pos].key != k) {
+    pos = probe(pos);
+  }
+  return pos;
 }
 
-bool TT::contains(Key k) {
-  return get(k).depth != 0;
-} 
+bool TranspositionTable::contains(Key k) const {
+  return occupied(find(k));
+}
 
-void TT::insert(Key k, Value v) {
-  map[k.hash() % SIZE] = {k, v};
+void TranspositionTable::update(Key k, Value v) {
+  table[find(k)] = {k, v};  
+}
+
+TranspositionTable::Value& TranspositionTable::operator[](Key k) {
+  if (!contains(k)) {
+    throw std::runtime_error("Key not found");
+  }
+  
+  size_t pos = k.hash() % SIZE;
+  while (table[pos].key != k) {
+    pos = probe(pos);
+  }
+  return table[pos].value;
 }

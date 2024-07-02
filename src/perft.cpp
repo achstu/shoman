@@ -1,14 +1,33 @@
 #include <iostream>
+#include <algorithm>
 
-#include "board.h"
 #include "state.h"
 #include "tt.h"
 
 #include <format>
 
-void collision_test() {
-  std::ios_base::sync_with_stdio(false);
+void evaluation_test() {
+  std::cout << "Testing evaluation function..." << std::endl;
   
+  std::vector<float> evals;
+  for (int i = 0; i < 1000; i++) {
+    State state = State::random();
+    
+    if (state.terminal()) continue;
+    
+    float score = state.evaluate();
+    std::cout << std::format("eval: {:.2f}\tstate: {}",
+      score,
+      state.to_string()
+    ) << std::endl;
+
+    evals.push_back(score);
+  }
+  std::ranges::sort(evals);
+  std::cout << evals.front() << ' ' << evals.back() << std::endl;
+}
+
+void collision_test() {
   std::cout << "Startning collision test..." << std::endl;
 
   TT* trans = new TT();
@@ -23,9 +42,9 @@ void collision_test() {
       if (key != state) {
         std::cout << "#### hash collision ####\n";
         std::cout << std::format("{} {:08X} {}\n{} {:08X} {}\n",
-                                 key.to_string(), key.hash(), key.hash() % TT::SIZE,
-                                 state.to_string(), state.hash(), state.hash() % TT::SIZE
-                               );
+          key.to_string(), key.hash(), key.hash() % TT::SIZE,
+          state.to_string(), state.hash(), state.hash() % TT::SIZE
+        );
         std::cout << "########################\n\n";
         collisions += 1;
       }
@@ -39,6 +58,7 @@ void collision_test() {
 }
 
 int main() {
+  // evaluation_test();
   collision_test();
 }
 

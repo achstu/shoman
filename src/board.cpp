@@ -1,4 +1,5 @@
 #include "board.h"
+#include "action.h"
 
 #include <bit>
 #include <cstdint>
@@ -41,17 +42,21 @@ Board Board::random() {
 }
 
 Board::Board() : bb_black(0), bb_white(0) {}
-Board::Board(std::string board_string) : bb_black(0), bb_white(0) {
+
+Board Board::from_string(std::string board_string) {
+  Board board;
   // black = white = 0;
   for (int i = 0; char stone : board_string) {
     switch (stone) {
-      case 'b': bb_black |= (1<<i); break;
-      case 'w': bb_white |= (1<<i); break;
+      case 'b': board.bb_black |= (1<<i); break;
+      case 'w': board.bb_white |= (1<<i); break;
       default: break;
     }
     i++;
   }
+  return board;
 }
+
 std::string Board::to_string() const {
   std::string board_string;
   for (int i = 0; i < 16; i++) {
@@ -102,7 +107,7 @@ std::vector<Action> Board::passive_actions() const {
   std::vector<Action> actions;
   for (int i = 0; i < 16; i++) {
     if (black(i)) {
-      for (Vector v : vectors) {
+      for (Vector v : Vector::all()) {
         Action action = {
           .index = i,
           .vector = v

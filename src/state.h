@@ -13,9 +13,10 @@ struct State {
 
   // constructor
   State() = default;
-  State(std::string state_string);
-
+  
+  static State from_string(std::string state_string);
   static State random();
+
   std::string to_string() const;
 
   // move generation
@@ -33,7 +34,7 @@ struct State {
   // comparing states
   bool operator==(const State&) const = default;
   __uint128_t to_binary() const;
-  hash_t hash() const;
+  uint64_t hash() const;
 
   // evaluation funtion
   float evaluate() const;

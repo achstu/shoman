@@ -13,6 +13,7 @@ struct Move {
   int aggressive_board;
   int aggressive_index;
 
+  Move() = default;
   Move(int i, int j, Action passive, Action aggressive);
   std::string to_string() const;
 

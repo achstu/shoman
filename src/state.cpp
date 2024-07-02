@@ -2,8 +2,6 @@
 #include "board.h"
 #include "hash.h"
 
-#include <format>
-#include <random>
 #include <sstream>
 
 #include <algorithm>
@@ -11,17 +9,10 @@
 
 bool State::terminal() const { return winning() || losing(); }
 bool State::winning() const {
-  return std::ranges::any_of(boards, [](Board b) { return b.winning(); });
-  for (Board board : boards) {
-    if (board.winning()) return true;
-  }
-  return false;
+  return std::ranges::any_of(boards, [](const Board& b) { return b.winning(); });
 }
 bool State::losing() const {
-  for (Board board : boards) {
-    if (board.losing()) return true;
-  }
-  return false;
+  return std::ranges::any_of(boards, [](const Board& b) { return b.losing(); });
 }
 
 std::string State::to_string() const {
@@ -45,7 +36,9 @@ State State::random() {
   return state;
 }
 
-State::State(std::string state_string) {
+State State::from_string(std::string state_string) {
+  State state;
+
   std::stringstream stream(state_string);
 
   char player;
@@ -54,11 +47,12 @@ State::State(std::string state_string) {
   int i = 0;
   std::string board_string;
   while (stream >> board_string) {
-    boards[i] = Board(board_string);
+    state.boards[i] = Board::from_string(board_string);
     i++;
   }
 
-  if (player == 'w') flip();
+  if (player == 'w') state.flip();
+  return state;
 }
 
 void State::flip() {
@@ -91,8 +85,8 @@ void State::make(Move move) {
 }
 
 // TODO: consider zobrist hashing
-hash_t State::hash() const {
-  return hash::fnv1a(to_binary());
+uint64_t State::hash() const {
+  return hash::fnv1a_64(to_binary());
 }
 
 __uint128_t State::to_binary() const {
@@ -110,21 +104,3 @@ float State::evaluate() const {
   }
   return score;
 }
-/* pomysly na potem
-float State::evaluateBoard() {
-  float score = 0;
-
-  //score += evaluateStoneCount();
-  //score += evaluateStonePositioning();
-  for (int i = 0; i < 4; ++i) {
-    score += boards[i].evaluate();
-  }
-
-  
-  score += evaluateMobility();
-  score += evaluateThreats();
-  score += evaluateDefense();
-
-  return score;
-}
-*/
