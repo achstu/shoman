@@ -3,6 +3,7 @@
 #include <bit>
 #include <cstdint>
 #include <cstdlib>
+#include <limits>
 #include <random>
 
 bool Board::winning() const { return bb_white == 0; }
@@ -17,32 +18,26 @@ bool Board::empty(int i) const    { return !occupied(i); }
 int Board::count_black() const { return std::popcount(bb_black); }
 int Board::count_white() const { return std::popcount(bb_white); }
 
-uint16_t random_mask(int bits, int seed) {
-  uint16_t mask = 0;
-  std::random_device dev;
-  std::mt19937 rng(dev());
-  std::uniform_int_distribution<> distrib(0, 15);
-  while (bits--) {
-    int bit = distrib(rng);
-    mask |= (1 << bit);
-  }
+uint16_t random_mask() {
+  std::mt19937 rng(std::random_device {}());
+  std::uniform_int_distribution<> distrib(
+    std::numeric_limits<uint16_t>::min(),
+    std::numeric_limits<uint16_t>::max()
+  );
+  uint16_t mask = distrib(rng);
+  while (std::popcount(mask) > 4) mask = distrib(rng);
   return mask;
 }
 
-Board::Board(int seed) {
-  std::random_device dev;
-  std::mt19937 rng(dev());
-  std::uniform_int_distribution<> distrib(1, 4);
-  int b = distrib(rng);
-  int w = distrib(rng);
+Board Board::random() {
+  Board board;
 
-  bb_black = random_mask(b, seed);
-  bb_white = random_mask(w, seed);
-  uint16_t a = bb_white & bb_black;
-
-  bb_black ^= a;
-  bb_white ^= a;
-  
+  board.bb_black = random_mask();
+  board.bb_white = random_mask();
+  uint16_t common = board.bb_black & board.bb_white;
+  board.bb_black ^= common;
+  board.bb_white ^= common;
+  return board;
 }
 
 Board::Board() : bb_black(0), bb_white(0) {}

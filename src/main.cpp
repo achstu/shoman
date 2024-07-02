@@ -9,7 +9,7 @@
 void test_rand_evals(int N) {
   std::vector<float> evals;
   for (int i = 0; i < N; i++) {
-    State state(i);
+    State state = State::random();
     
     std::cout << std::format("eval: {:.2f}\tstate: {}",
       state.evaluate(),

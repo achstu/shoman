@@ -1,7 +1,8 @@
 CXX := g++
-CXXFLAGS := -Wall -Wextra -std=c++20
+CXXFLAGS := -Wall -Wextra -std=c++20 -g
+STACK := -Wl,--stack,17179869184
 
-SRCS := state.cpp move.cpp board.cpp action.cpp vector.cpp search.cpp hash.cpp
+SRCS := state.cpp move.cpp board.cpp action.cpp vector.cpp search.cpp hash.cpp tt.cpp
 
 OBJS := $(SRCS:.cpp=.o)
 
@@ -16,7 +17,7 @@ run: $(TARGET)
 	./shoman < ../test/initial.txt
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(STACK) -c $< -o $@
 
 perft: $(OBJS) perft.o
 	$(CXX) $(CXXFLAGS) $(OBJS) perft.o -o perft

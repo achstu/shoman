@@ -37,10 +37,12 @@ std::string State::to_string() const {
   return result;
 }
 
-State::State(int seed) {
-  for (Board& board : boards) {
-    board = Board(1);
+State State::random() {
+  State state;
+  for (Board& board : state.boards) {
+    board = Board::random();
   }
+  return state;
 }
 
 State::State(std::string state_string) {

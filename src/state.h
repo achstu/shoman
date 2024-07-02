@@ -12,8 +12,10 @@ struct State {
   Board boards[4];
 
   // constructor
-  State(int seed);
+  State() = default;
   State(std::string state_string);
+
+  static State random();
   std::string to_string() const;
 
   // move generation

@@ -2,26 +2,27 @@
 #include <cstddef>
 
 
-std::size_t TT::probe(Key k, std::size_t x) {
-  // gcd(a, M) = 1
+size_t TT::probe(size_t x) {
+  // gcd(a, SIZE) = 1
   constexpr size_t a = 85654861; // 0x51AFD4D
-  return a * x;
+  constexpr size_t b = 2003; // b is obsolete
+  return a * x + b;
 }
+
+#include <iostream>
+
+TT::Value& TT::get(Key k) {
+  return map[k.hash() % SIZE].value;
+}
+
+TT::Key& TT::get_key(Key k) {
+  return map[k.hash() % SIZE].key;
+}
+
+bool TT::contains(Key k) {
+  return get(k).depth != 0;
+} 
 
 void TT::insert(Key k, Value v) {
-  size_t x = 1;
-  size_t hash = k.hash();
-  size_t index = hash;
-
-  while (map[index] != nullptr) {
-    index = (hash + probe(k, x)) % M;
-    x = x + 1;
-  }
-
-  map[index] = &v;
+  map[k.hash() % SIZE] = {k, v};
 }
-
-
-
-
-

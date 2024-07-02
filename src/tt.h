@@ -2,27 +2,35 @@
 
 
 #include "state.h"
-
-
+#include <algorithm>
+#include <array>
+#include <cstddef>
+#include <iostream>
 
 // Transposition Table with open addressing
 // and linear porbing
 struct TT {
-  struct Value {
+  using Key = State;
+  using Value = struct {
     float score;
     int depth;
   };
-  using Key = const State&;
 
-  static constexpr std::size_t M = 0x3B800001;
-  Value* map[M];
-
-  TT();
-  // alpha, alpha < threshold
+  struct Elem {
+    Key key;
+    Value value;
+  };
   
-  static std::size_t probe(Key k, std::size_t x);
-
+  // static constexpr size_t SIZE = 0x3B800001;
+  static constexpr size_t SIZE = 1000000;
+  std::array<Elem, SIZE> map;
+  // std::vector<Elem> map;
   
+  static size_t probe(size_t x);
+
+  TT() = default;
+  bool contains(Key k);
+  Value& get(Key k);
+  Key& get_key(Key k);
   void insert(Key k, Value v);
-  void search(Key k);
 };

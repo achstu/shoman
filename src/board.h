@@ -13,7 +13,7 @@ struct Board {
 
   // constructors
   Board();
-  Board(int seed);
+  static Board random();
   Board(std::string board_string);
   std::string to_string() const;
 
