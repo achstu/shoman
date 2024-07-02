@@ -22,8 +22,9 @@ struct TT {
   };
   
   // static constexpr size_t SIZE = 0x3B800001;
-  static constexpr size_t SIZE = 1000000;
+  static constexpr size_t SIZE = 10'000'003;
   std::array<Elem, SIZE> map;
+  // Elem map[SIZE];
   // std::vector<Elem> map;
   
   static size_t probe(size_t x);
