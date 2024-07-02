@@ -1,5 +1,6 @@
 #include "state.h"
 #include "board.h"
+#include "hash.h"
 
 #include <format>
 #include <random>
@@ -88,13 +89,16 @@ void State::make(Move move) {
 }
 
 // TODO: consider zobrist hashing
-std::size_t State::hash() const {
-  const std::size_t M = 998'244'353;
-  __uint128_t bb = 0;
+hash_t State::hash() const {
+  return hash::fnv1a(to_binary());
+}
+
+__uint128_t State::to_binary() const {
+  __uint128_t mask = 0;
   for (Board board : boards) {
-    bb = (bb << 32) | board.hash();
+    mask = (mask << 32) | board.to_binary();
   }
-  return bb % M;
+  return mask;
 }
 
 float State::evaluate() const {

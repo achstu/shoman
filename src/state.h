@@ -5,6 +5,7 @@
 
 #include "board.h"
 #include "move.h"
+#include "hash.h"
 
 
 struct State {
@@ -29,7 +30,8 @@ struct State {
 
   // comparing states
   bool operator==(const State&) const = default;
-  std::size_t hash() const;
+  __uint128_t to_binary() const;
+  hash_t hash() const;
 
   // evaluation funtion
   float evaluate() const;

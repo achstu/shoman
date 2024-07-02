@@ -1,5 +1,2 @@
 -std=c++20
--I/usr/include
--I/usr/include/c++/20
--I/usr/local/include
-
+-xc++

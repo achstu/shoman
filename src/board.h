@@ -43,7 +43,7 @@ struct Board {
 
   // comparing boards
   bool operator==(const Board&) const = default;
-  std::size_t hash() const;
+  uint32_t to_binary() const;
 
   // evaluation function
   float evaluate() const;

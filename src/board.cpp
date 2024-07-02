@@ -154,11 +154,12 @@ void Board::make(Action action) {
 }
  
 
-std::size_t Board::hash() const {
-  return ((std::size_t)bb_black << 16) | bb_white;
+uint32_t Board::to_binary() const {
+  return ((uint32_t)bb_black << 16) | bb_white;
 }
 
-#include <cmath>
+
+// #include <cmath>
 //Points for each position
 const float CENTER_CONTROL = 2.0 / 5.0;
 const float EDGE_CONTROL = 1.0 / 5.0;
