@@ -41,9 +41,10 @@ float alphabeta(const State& state, int depth, float alpha, float beta) {
   return score;
 }
 
+#include <chrono>
+
 // alpha-beta with transposition table
-float tt_alphabeta(TranspositionTable& tt, const State& state, int depth,
-                   float alpha, float beta) {
+float tt_alphabeta(TranspositionTable& tt, const State& state, int depth, float alpha, float beta) {
   if (depth == 0 || state.terminal()) {
     return state.evaluate();
   }
@@ -57,7 +58,7 @@ float tt_alphabeta(TranspositionTable& tt, const State& state, int depth,
     State child = state;
     child.make(move);
 
-    float child_score = -tt_alphabeta(tt, child, depth-1, -beta, -alpha);
+    float child_score = -tt_alphabeta(tt, child, depth-1,  -beta, -alpha);
     
     // score = std::max(score, child_score);
     if (score < child_score) {

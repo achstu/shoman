@@ -8,7 +8,7 @@ size_t TranspositionTable::probe(size_t x) {
   // gcd(a, SIZE) = 1
   constexpr size_t a = 85654861; // 0x51AFD4D
   constexpr size_t b = 2003; // b is obsolete
-  return a * x + b;
+  return (a * x + b) % SIZE;
 }
 
 
@@ -36,8 +36,11 @@ void TranspositionTable::update(Key k, Value v) {
   table[find(k)] = {k, v};  
 }
 
+
+#include <iostream>
 TranspositionTable::Value& TranspositionTable::operator[](Key k) {
   if (!contains(k)) {
+    std::cout << k.to_string() << std::endl;
     throw std::runtime_error("Key not found");
   }
   
