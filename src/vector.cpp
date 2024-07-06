@@ -17,20 +17,3 @@ std::string Vector::to_string() const {
   }
   return "";  
 }
-
-constexpr std::array<Vector, 16> Vector::all() {
-  return {{
-    // L and R
-    {1, -1}, {2, -1},
-    {1, +1}, {2, +1},
-    // U and D
-    {1, -4}, {2, -4},
-    {1, +4}, {2, +4},
-    // UR and DL
-    {1, -3}, {2, -3},
-    {1, +3}, {2, +3},
-    // UL and DR
-    {1, -5}, {2, -5},
-    {1, +5}, {2, +5}
-  }};
-}

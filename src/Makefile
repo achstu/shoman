@@ -4,14 +4,14 @@ CXX := clang++
 CXXFLAGS := -std=c++20
 
 # flags for debugging
-CXXFLAGS += -Wall -Wextra -Werror -pedantic
+CXXFLAGS += -Wall -Wextra -pedantic
 
 # flags for performance
 # CXXFLAGS += -march=native -Ofast
 
 
 SRCS := vector.cpp action.cpp board.cpp state.cpp move.cpp
-SRCS += hash.cpp tt.cpp search.cpp
+SRCS += hash.cpp tt.cpp search.cpp main.cpp
 
 OBJS := $(SRCS:.cpp=.o)
 
