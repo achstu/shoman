@@ -1,7 +1,17 @@
-CXX := g++
-CXXFLAGS := -Wall -Wextra -std=c++20 -march=native -Ofast
-# -O3 -march=native -flto
-SRCS := state.cpp move.cpp board.cpp action.cpp vector.cpp search.cpp hash.cpp tt.cpp
+CXX := clang++
+
+# basic flags
+CXXFLAGS := -std=c++20
+
+# flags for debugging
+CXXFLAGS += -Wall -Wextra -Werror -pedantic
+
+# flags for performance
+# CXXFLAGS += -march=native -Ofast
+
+
+SRCS := vector.cpp action.cpp board.cpp state.cpp move.cpp
+SRCS += hash.cpp tt.cpp search.cpp
 
 OBJS := $(SRCS:.cpp=.o)
 
@@ -9,17 +19,11 @@ TARGET := shoman
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS) main.o
-	$(CXX) $(CXXFLAGS) $(OBJS) main.o -o $(TARGET)
-
-run: $(TARGET)
-	./shoman < ../test/initial.txt
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
 
 %.o: %.cpp %.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-perft: $(OBJS) perft.o
-	$(CXX) $(CXXFLAGS) $(OBJS) perft.o -o perft
 
 clean:
 	rm -f $(OBJS)

@@ -1,6 +1,7 @@
+# files from build
+**/*.o
+**/*.s
 
-.helix
-*.nix
 
-compile_flags.txt
-*.o
+# built binary
+src/shoman*
