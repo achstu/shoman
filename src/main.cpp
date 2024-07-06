@@ -1,7 +1,5 @@
-#include <chrono>
 #include <iostream>
 #include <string>
-#include <format>
 
 #include "state.h"
 #include "search.h"
@@ -19,7 +17,6 @@ int main() {
 
     float score = tt_alphabeta(*tt, state, 3);
     
-    // std::cout << score << '\n';
     std::cout << tt->operator[](state).move.to_string() << std::endl;
   }
 }
