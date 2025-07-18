@@ -8,7 +8,7 @@ use {
     strum_macros::{Display, EnumIter, EnumString},
 };
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum Player {
     Black = 0,
     White = 1,
@@ -128,6 +128,10 @@ impl Move {
         })
     }
 
+    pub fn example() -> Self {
+        Self::from_string("1Ub0h0").unwrap()
+    }
+
     pub fn passive(&self) -> SubMove {
         SubMove {
             vector: self.vector,
@@ -163,7 +167,7 @@ impl Move {
 
 #[derive(Clone, Copy)]
 pub struct Board {
-    bitboard: [u16; 2],
+    pub bitboard: [u16; 2],
 }
 
 impl Board {
@@ -195,12 +199,6 @@ impl Board {
             && Self::is_index_valid(dst)
             && ((src / 4 - dst / 4).abs() | (src % 4 - dst % 4).abs()) < 3
     }
-
-    // const fn is_submove_valid(sub_mv: &SubMove) -> bool {
-    //     let src = sub_mv.index as isize;
-    //     let dst = src + sub_mv.vector.length * (sub_mv.vector.direction as isize);
-    //     Self::is_move_valid(src, dst)
-    // }
 
     pub fn stone(&self, i: isize, player: Player) -> bool {
         self.bitboard[player as usize] & (1 << i) != 0
@@ -236,10 +234,16 @@ impl Board {
         let dst = src + vec.length * (vec.direction as isize);
         let nxt = src + (vec.length + 1) * (vec.direction as isize);
 
-        // TODO: name capture is not quite accurate
-        let capture: u16 = Self::is_move_valid(dst, nxt) as u16;
+        #[cfg(debug_assertions)]
+        if !Self::is_index_valid(dst) {
+            return None;
+        }
+
+        let shove_bit = (Self::is_move_valid(dst, nxt) as u16)
+            .checked_shl(nxt as u32)
+            .unwrap_or(0);
         let trace: u16 = (1 << mid) | (1 << dst);
-        let full_trace: u16 = trace | (capture << nxt);
+        let full_trace: u16 = trace | shove_bit;
 
         if !Self::is_move_valid(src, dst)
             || self.bitboard[player as usize] & (1 << src) == 0
@@ -251,7 +255,7 @@ impl Board {
 
         let mut bb = self.bitboard;
         bb[player as usize] ^= (1 << src) | (1 << dst);
-        bb[player.other() as usize] ^= (bb[player.other() as usize] & trace) | (capture << nxt);
+        bb[player.other() as usize] ^= (bb[player.other() as usize] & trace) | shove_bit;
         Some(Board { bitboard: bb })
     }
 
@@ -263,7 +267,15 @@ impl Board {
     }
 
     pub fn is_terminal(&self) -> bool {
-        self.bitboard[1] == 0 || self.bitboard[1] == 0
+        self.bitboard[0] == 0 || self.bitboard[1] == 0
+    }
+
+    pub fn winner(&self) -> Option<Player> {
+        match self.bitboard {
+            [0, _] => Some(Player::White),
+            [_, 0] => Some(Player::Black),
+            _ => None,
+        }
     }
 }
 
@@ -311,6 +323,10 @@ impl GameState {
 
     pub fn is_terminal(&self) -> bool {
         self.boards.iter().any(|b| b.is_terminal())
+    }
+
+    pub fn winner(&self) -> Option<Player> {
+        self.boards.iter().find_map(|b| b.winner())
     }
 }
 

@@ -3,7 +3,7 @@
 use crate::shobu::{Board, GameState, Location, Move, Player, SubMove, Vector};
 use itertools::iproduct;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct BoardWrapper {
     passive: [u16; 21],
     shove: [u16; 21],
@@ -47,6 +47,7 @@ impl BoardWrapper {
     }
 }
 
+#[derive(Clone)]
 pub struct GameStateWrapper {
     pub shobu: GameState,
     boards: [[BoardWrapper; 4]; 2],
@@ -74,6 +75,29 @@ impl GameStateWrapper {
             self.boards[p as usize][mv.aggressive.board_index] =
                 BoardWrapper::new(&self.shobu.boards[mv.aggressive.board_index], p);
         }
+    }
+
+    pub fn count_shove(&self, player: Player) -> usize {
+        let mut res = 0;
+        for bw in self.boards[player as usize].iter() {
+            res += bw
+                .shove
+                .iter()
+                .map(|mask| mask.count_ones() as usize)
+                .sum::<usize>();
+        }
+        res
+    }
+    pub fn count_passive(&self, player: Player) -> usize {
+        let mut res = 0;
+        for bw in self.boards[player as usize].iter() {
+            res += bw
+                .passive
+                .iter()
+                .map(|mask| mask.count_ones() as usize)
+                .sum::<usize>();
+        }
+        res
     }
 }
 
